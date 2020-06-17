@@ -1,4 +1,3 @@
 package com.criteo
 
-object Compat {
-}
+object Compat {}
