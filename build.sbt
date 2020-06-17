@@ -1,6 +1,8 @@
 inThisBuild(
   List(
     scalaVersion := "2.13.2",
+    crossVersion := CrossVersion.full,
+    crossScalaVersions := Seq("2.12.11", scalaVersion.value),
     organization := "io.regadas",
     organizationName := "regadas",
     licenses := Seq(
@@ -43,17 +45,9 @@ inThisBuild(
   )
 )
 
-lazy val commonSettings = Seq(
-  scalaVersion := "2.12.11",
-  crossVersion := CrossVersion.full,
-  crossScalaVersions := Seq("2.12.11", scalaVersion.value)
-)
-
 lazy val socco =
   (project in file("."))
     .settings(
-      commonSettings,
-      organization := "io.regadas",
       name := "socco-ng",
       scalacOptions ++= Seq(
         "-deprecation",
@@ -131,7 +125,6 @@ lazy val socco =
 
 lazy val examples =
   project.settings(
-    commonSettings,
     publishArtifact := false,
     libraryDependencies ++= Seq(
       "co.fs2" %% "fs2-core" % "0.9.5"

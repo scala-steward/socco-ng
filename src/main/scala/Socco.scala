@@ -3,8 +3,6 @@ package com.criteo
 import scala.tools.nsc
 import nsc.{Phase, Global}
 import nsc.plugins.{Plugin, PluginComponent}
-import cats.implicits._
-import scala.util.{Failure, Success}
 
 class Socco(val global: Global) extends Plugin {
   import global._
@@ -40,28 +38,23 @@ class Socco(val global: Global) extends Plugin {
 
     def error(t: Throwable) = callback(t.getMessage)
 
-    val result = options.map {
-      case regex"out:(.*)$directory" =>
-        Try(out = new java.io.File(directory))
-      case regex"style:(.*)$file" =>
-        Try(userStyles = Some(Source.fromFile(file).getLines.mkString("\n")))
-      case regex"header:(.*)$file" =>
-        Try(header = Some(Source.fromFile(file).getLines.mkString("\n")))
-      case regex"footer:(.*)$file" =>
-        Try(footer = Some(Source.fromFile(file).getLines.mkString("\n")))
-      case regex"package_([^:]*)$packageName:(.*)$url" =>
-        Try(packages = packages + (packageName -> url))
-      case oops =>
-        Try(new Exception(s"Option not recognized, $oops"))
+    Try {
+      options.map {
+        case regex"out:(.*)$directory" =>
+          out = new java.io.File(directory)
+        case regex"style:(.*)$file" =>
+          userStyles = Some(Source.fromFile(file).getLines.mkString("\n"))
+        case regex"header:(.*)$file" =>
+          header = Some(Source.fromFile(file).getLines.mkString("\n"))
+        case regex"footer:(.*)$file" =>
+          footer = Some(Source.fromFile(file).getLines.mkString("\n"))
+        case regex"package_([^:]*)$packageName:(.*)$url" =>
+          packages = packages + (packageName -> url)
+        case oops =>
+          new Exception(s"Option not recognized, $oops")
+      }
     }
-
-    result.sequence match {
-      case Success(_) =>
-        true
-      case Failure(t) =>
-        error(t)
-        false
-    }
+      .fold(t => { error(t); false }, _ => true)
   }
 
   // A type annotation with a link to the scalaDoc
