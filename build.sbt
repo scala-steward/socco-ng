@@ -127,14 +127,14 @@ lazy val examples =
   project.settings(
     publishArtifact := false,
     libraryDependencies ++= Seq(
-      "co.fs2" %% "fs2-core" % "0.9.5"
+      "co.fs2" %% "fs2-core" % "2.4.0"
     ),
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core",
       "io.circe" %% "circe-generic",
       "io.circe" %% "circe-parser",
       "io.circe" %% "circe-optics"
-    ).map(_ % "0.7.1")
+    ).map(_ % "0.13.0")
   )
 
 def removeDependencies(groups: String*)(xml: scala.xml.Node) = {
