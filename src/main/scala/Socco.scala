@@ -514,7 +514,7 @@ class Socco(val global: Global) extends Plugin {
                   opt,
                   content,
                   "target" -> "doc",
-                  "href" -> s"${findPackage(url.render()).get}/${url}"
+                  "href" -> s"${findPackage(url.render()).get}/${url.render()}"
                 )
             }
             .build
