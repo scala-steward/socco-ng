@@ -1,7 +1,5 @@
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.0")
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.2")
-addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
-addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0")
 addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.6.3")
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.10")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.0")

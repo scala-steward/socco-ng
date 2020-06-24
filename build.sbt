@@ -29,19 +29,7 @@ inThisBuild(
         url = url("https://twitter.com/regadas")
       )
     ),
-    publishMavenStyle := true,
-    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
-    credentials += (for {
-      username <- sys.env.get("SONATYPE_USERNAME")
-      password <- sys.env.get("SONATYPE_PASSWORD")
-    } yield Credentials(
-      "Sonatype Nexus Repository Manager",
-      "oss.sonatype.org",
-      username,
-      password
-    )),
-    dynverSonatypeSnapshots := true
-    // publishTo := sonatypePublishToBundle.value
+    publishMavenStyle := true
   )
 )
 
@@ -49,6 +37,7 @@ lazy val socco =
   (project in file("."))
     .settings(
       name := "socco-ng",
+      crossVersion := CrossVersion.full,
       scalacOptions ++= Seq(
         "-deprecation",
         "-encoding",
