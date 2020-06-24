@@ -1,0 +1,72 @@
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v2.1.0"
+      - run: |
+          shasum build.sbt \
+            project/plugins.sbt \
+            project/build.properties > gha.cache.tmp
+      - name: "~/.sbt cache"
+        uses: "actions/cache@v1"
+        with:
+          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
+          path: "~/.sbt"
+          restore-keys: sbt
+      - name: "~/.cache/coursier cache"
+        uses: "actions/cache@v1"
+        with:
+          key: "${{ runner.os }}-coursier-${{ hashFiles('gha.cache.tmp') }}"
+          path: "~/.cache/coursier"
+          restore-keys: coursier
+      - name: java 11 setup
+        uses: "olafurpg/setup-java@v6"
+        with:
+          java-version: '11'
+      - run: "sbt \"++${{ matrix.scala}} compile\""
+    strategy:
+      matrix:
+        scala:
+          - '2.12.11'
+          - '2.13.2'
+  publish:
+    if: "github.event_name == 'push'"
+    name: publish
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v2.1.0"
+      - run: |
+          shasum build.sbt \
+            project/plugins.sbt \
+            project/build.properties > gha.cache.tmp
+      - name: "~/.sbt cache"
+        uses: "actions/cache@v1"
+        with:
+          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
+          path: "~/.sbt"
+          restore-keys: sbt
+      - name: "~/.cache/coursier cache"
+        uses: "actions/cache@v1"
+        with:
+          key: "${{ runner.os }}-coursier-${{ hashFiles('gha.cache.tmp') }}"
+          path: "~/.cache/coursier"
+          restore-keys: coursier
+      - name: java 11 setup
+        uses: "olafurpg/setup-java@v6"
+        with:
+          java-version: '11'
+      - uses: "olafurpg/setup-gpg@v2"
+      - env:
+          PGP_PASSPHRASE: "${{ secrets.PGP_PASSPHRASE }}"
+          PGP_SECRET: "${{ secrets.PGP_SECRET }}"
+          SONATYPE_PASSWORD: "${{ secrets.SONATYPE_PASSWORD }}"
+          SONATYPE_USERNAME: "${{ secrets.SONATYPE_USERNAME }}"
+        name: "Publish ${{ github.ref }}"
+        run: sbt ci-release
+name: ci
+on:
+  pull_request: {}
+  push: {}
