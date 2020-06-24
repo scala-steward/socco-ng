@@ -521,7 +521,9 @@ class Socco(val global: Global) extends Plugin {
 
           transformer.transform(block.text) match {
             case Right(html) => html
-            case Left(error) => sys.error(error.message)
+            case Left(error) => 
+              println(error.message)
+              block.text
           }
         }
 
