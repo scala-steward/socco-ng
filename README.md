@@ -1,6 +1,11 @@
-# Socco
+# socco-ng
 
-Socco is a Scala compiler plugin to generate documentation from Scala source files.
+![build](https://github.com/regadas/socco-ng/workflows/ci/badge.svg)
+[![GitHub license](https://img.shields.io/github/license/regadas/socco-ng.svg)](./LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/io.regadas/socco-ng_2.13.2.svg)](https://maven-badges.herokuapp.com/maven-central/io.regadas/socco-ng_2.13.2)
+
+
+**socco-ng** is a Scala compiler plugin to generate documentation from Scala source files. This is a fork from [criteo/socco](https://github.com/criteo/socco).
 
 It produces HTML documents that display your comments alongside your code. Comments are passed through Markdown, and the Scala code is syntax highlighted, typed and linked to the appropriate API Doc.
 
