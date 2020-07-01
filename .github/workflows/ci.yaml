@@ -30,6 +30,7 @@ jobs:
         scala:
           - '2.12.11'
           - '2.13.2'
+          - '2.13.3'
   publish:
     if: "github.event_name == 'push'"
     name: publish
