@@ -2,7 +2,7 @@
 
 ![build](https://github.com/regadas/socco-ng/workflows/ci/badge.svg)
 [![GitHub license](https://img.shields.io/github/license/regadas/socco-ng.svg)](./LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/io.regadas/socco-ng_2.13.2.svg)](https://maven-badges.herokuapp.com/maven-central/io.regadas/socco-ng_2.13.2)
+[![Maven Central](https://img.shields.io/maven-central/v/io.regadas/socco-ng_2.13.3.svg)](https://maven-badges.herokuapp.com/maven-central/io.regadas/socco-ng_2.13.3)
 
 
 **socco-ng** is a Scala compiler plugin to generate documentation from Scala source files. This is a fork from [criteo/socco](https://github.com/criteo/socco).
@@ -15,13 +15,13 @@ If you use SBT, add the following settings to enable the plugin:
 
 ```scala
 autoCompilerPlugins := true
-addCompilerPlugin("io.regadas" %% "socco-ng" % "0.1.1")
+addCompilerPlugin("io.regadas" %% "socco-ng" % "0.1.2")
 ```
 
 If you are using scalac directly, add the following option:
 
 ```sh
--Xplugin:io.regadas.socco-ng_2.12-0.1.1.jar
+-Xplugin:io.regadas.socco-ng_2.12-0.1.2.jar
 ```
 
 This can be followed by any of the available options:
