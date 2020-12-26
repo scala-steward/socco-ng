@@ -21,7 +21,7 @@ jobs:
           path: "~/.cache/coursier"
           restore-keys: coursier
       - name: java 11 setup
-        uses: "olafurpg/setup-java@v6"
+        uses: "olafurpg/setup-java@v10"
         with:
           java-version: '11'
       - run: "sbt \"++${{ matrix.scala}} compile\""
@@ -56,7 +56,7 @@ jobs:
           path: "~/.cache/coursier"
           restore-keys: coursier
       - name: java 11 setup
-        uses: "olafurpg/setup-java@v6"
+        uses: "olafurpg/setup-java@v10"
         with:
           java-version: '11'
       - uses: "olafurpg/setup-gpg@v2"
