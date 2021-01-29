@@ -38,7 +38,6 @@ jobs:
           architecture: x64
           java-package: jdk
           java-version: "11"
-      - uses: "olafurpg/setup-gpg@v2"
       - env:
           PGP_PASSPHRASE: "${{ secrets.PGP_PASSPHRASE }}"
           PGP_SECRET: "${{ secrets.PGP_SECRET }}"
