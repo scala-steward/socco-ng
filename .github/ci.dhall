@@ -1,26 +1,25 @@
 let GithubActions =
-      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall sha256:37feb22e3fd5f7b6e0c94d1aaa94bf704422792fb898dbbcc5d1dabe9f9b3fbf
+      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall sha256:4c9474076eb57c92ea99ce3a4fdd9acc9bee1bdeedbc6f2b6840235128caf5b3
 
 let matrix = toMap { scala = [ "2.12.11", "2.13.2", "2.13.3" ] }
 
 let setup =
-      [ GithubActions.steps.checkout
-      , GithubActions.steps.run
-          { run =
+      [ GithubActions.steps.actions/checkout
+      , GithubActions.steps.actions/cache
+          { path =
               ''
-              shasum build.sbt \
-                project/plugins.sbt \
-                project/build.properties > gha.cache.tmp
+              ~/.sbt
+              "~/.cache/coursier"
               ''
+          , key = "sbt"
+          , hashFiles =
+            [ "build.sbt"
+            , "project/plugins.sbt"
+            , "project/build.properties"
+            , "project/Dependencies.scala"
+            ]
           }
-      , GithubActions.steps.cache
-          { path = "~/.sbt", key = "sbt", hashFile = "gha.cache.tmp" }
-      , GithubActions.steps.cache
-          { path = "~/.cache/coursier"
-          , key = "coursier"
-          , hashFile = "gha.cache.tmp"
-          }
-      , GithubActions.steps.olafurpg/java-setup { java-version = "11" }
+      , GithubActions.steps.actions/setup-java { java-version = "11" }
       ]
 
 in  GithubActions.Workflow::{
@@ -44,10 +43,10 @@ in  GithubActions.Workflow::{
           , name = Some "publish"
           , needs = Some [ "build" ]
           , runs-on = GithubActions.types.RunsOn.ubuntu-latest
-          , if = Some "github.event_name == 'push'"
+          , `if` = Some "github.event_name == 'push'"
           , steps =
                 setup
-              # [ GithubActions.steps.olafurpg/gpg-setup
+              # [ GithubActions.steps.olafurpg/setup-gpg
                 , GithubActions.steps.olafurpg/sbt-ci-release
                 ]
           }
