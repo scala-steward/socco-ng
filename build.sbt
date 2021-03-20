@@ -60,7 +60,7 @@ lazy val socco =
       ),
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-        "org.planet42" %% "laika-core" % "0.17.0"
+        "org.planet42" %% "laika-core" % "0.17.1"
       ),
       pomPostProcess := removeDependencies("org.planet42", "org.scala-lang"),
       // Vendorise internal libs
