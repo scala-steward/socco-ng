@@ -1,6 +1,6 @@
 inThisBuild(
   List(
-    scalaVersion := "2.13.5",
+    scalaVersion := "2.13.6",
     crossVersion := CrossVersion.full,
     crossScalaVersions := Seq(
       "2.12.11",
