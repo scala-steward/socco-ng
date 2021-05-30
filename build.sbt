@@ -2,15 +2,7 @@ inThisBuild(
   List(
     scalaVersion := "2.13.6",
     crossVersion := CrossVersion.full,
-    crossScalaVersions := Seq(
-      "2.12.11",
-      "2.12.12",
-      "2.12.13",
-      "2.13.2",
-      "2.13.3",
-      "2.13.4",
-      scalaVersion.value
-    ),
+    crossScalaVersions := Seq("2.12.14", "2.13.6", scalaVersion.value),
     organization := "io.regadas",
     organizationName := "regadas",
     licenses := Seq(
