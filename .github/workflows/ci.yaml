@@ -9,8 +9,7 @@ jobs:
       - name: java 11 setup
         uses: "actions/setup-java@v2.2.0"
         with:
-          architecture: x64
-          java-package: jdk
+          distribution: adopt
           java-version: "11"
       - run: 'sbt "++${{ matrix.scala}} compile"'
     strategy:
@@ -31,8 +30,7 @@ jobs:
       - name: java 11 setup
         uses: "actions/setup-java@v2.2.0"
         with:
-          architecture: x64
-          java-package: jdk
+          distribution: adopt
           java-version: "11"
       - env:
           PGP_PASSPHRASE: "${{ secrets.PGP_PASSPHRASE }}"
@@ -42,6 +40,4 @@ jobs:
         name: "Publish ${{ github.ref }}"
         run: sbt ci-release
 name: ci
-on:
-  pull_request: {}
-  push: {}
+on: [push, pull_request]
