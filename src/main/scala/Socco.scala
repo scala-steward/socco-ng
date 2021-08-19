@@ -102,18 +102,17 @@ class Socco(val global: Global) extends Plugin {
         // and we split the source into (comments,code) blocks.
         val (headerOffset, maybeTitle, blocks) = splitInBlocks(unit)
 
-        maybeTitle.foreach {
-          case title =>
-            // Now we tokenize the source code using
-            // the scala compiler analyzer.
-            val tokens = tokenize(unit, headerOffset)
+        maybeTitle.foreach { case title =>
+          // Now we tokenize the source code using
+          // the scala compiler analyzer.
+          val tokens = tokenize(unit, headerOffset)
 
-            // Try to type the relevant tokens and to generate
-            // links to the scala documentation.
-            val typedTokens = typeTokens(unit, tokens, headerOffset)
+          // Try to type the relevant tokens and to generate
+          // links to the scala documentation.
+          val typedTokens = typeTokens(unit, tokens, headerOffset)
 
-            // Finally generate the HTML output
-            generate(unit, typedTokens, title, blocks)
+          // Finally generate the HTML output
+          generate(unit, typedTokens, title, blocks)
         }
       }
 
@@ -134,34 +133,33 @@ class Socco(val global: Global) extends Plugin {
           .foldLeft(
             ((maybeTitle.fold(0)(_ => lines.head.length + 1)) -> List
               .empty[Either[Block, Block]])
-          ) {
-            case ((offset, blocks), line) =>
-              (offset + line.length + 1) -> (blocks match {
-                case Nil =>
-                  isComment(line).fold[List[Either[Block, Block]]] {
-                    Right(Block(offset, line)) :: Left(Block(0, "")) :: Nil
-                  } { comment => Left(Block(offset, comment)) :: Nil }
-                case block :: rest =>
-                  isComment(line).fold[List[Either[Block, Block]]] {
-                    block match {
-                      case Left(_) =>
-                        Right(Block(offset, line)) :: block :: rest
-                      case Right(block) =>
-                        Right(
-                          block.copy(text = s"${block.text}\n${line}")
-                        ) :: rest
-                    }
-                  } { comment =>
-                    block match {
-                      case Left(block) =>
-                        Left(
-                          block.copy(text = s"${block.text}\n${comment}")
-                        ) :: rest
-                      case Right(_) =>
-                        Left(Block(offset, comment)) :: block :: rest
-                    }
+          ) { case ((offset, blocks), line) =>
+            (offset + line.length + 1) -> (blocks match {
+              case Nil =>
+                isComment(line).fold[List[Either[Block, Block]]] {
+                  Right(Block(offset, line)) :: Left(Block(0, "")) :: Nil
+                } { comment => Left(Block(offset, comment)) :: Nil }
+              case block :: rest =>
+                isComment(line).fold[List[Either[Block, Block]]] {
+                  block match {
+                    case Left(_) =>
+                      Right(Block(offset, line)) :: block :: rest
+                    case Right(block) =>
+                      Right(
+                        block.copy(text = s"${block.text}\n${line}")
+                      ) :: rest
                   }
-              })
+                } { comment =>
+                  block match {
+                    case Left(block) =>
+                      Left(
+                        block.copy(text = s"${block.text}\n${comment}")
+                      ) :: rest
+                    case Right(_) =>
+                      Left(Block(offset, comment)) :: block :: rest
+                  }
+                }
+            })
           }
 
         (
@@ -201,26 +199,26 @@ class Socco(val global: Global) extends Plugin {
 
         tokens.toSeq
           .sortBy(_._1)
-          .map {
-            case (start, (length, code)) =>
-              import nsc.ast.parser.Tokens._
+          .map { case (start, (length, code)) =>
+            import nsc.ast.parser.Tokens._
 
-              val text = source.content.slice(start, start + length)
-              Token(
-                math.max(0, start - headerOffset),
-                new String(text),
-                code match {
-                  case STRINGLIT | STRINGPART | INTERPOLATIONID => StringLiteral
-                  case x if isLiteral(x)                        => NumberLiteral
-                  case x if isIdentifier(x)                     => Identifier(None)
-                  case
-                    ABSTRACT | CASE | CATCH | CLASS | DEF | DO | ELSE | EXTENDS | FINAL |
-                    FINALLY | FOR | IF | IMPLICIT | IMPORT | LAZY | NEW | MACRO | MATCH |
-                    OBJECT | PACKAGE | PRIVATE | PROTECTED | RETURN | SUPER | TRY | VAL |
-                    VAR | WHILE | YIELD | CASECLASS => Keyword
-                  case _ => Default
-                }
-              )
+            val text = source.content.slice(start, start + length)
+            Token(
+              math.max(0, start - headerOffset),
+              new String(text),
+              code match {
+                case STRINGLIT | STRINGPART | INTERPOLATIONID => StringLiteral
+                case x if isLiteral(x)                        => NumberLiteral
+                case x if isIdentifier(x) => Identifier(None)
+                case ABSTRACT | CASE | CATCH | CLASS | DEF | DO | ELSE |
+                    EXTENDS | FINAL | FINALLY | FOR | IF | IMPLICIT |
+                    IMPORT | LAZY | NEW | MACRO | MATCH | OBJECT |
+                    PACKAGE | PRIVATE | PROTECTED | RETURN |
+                    SUPER | TRY | VAL | VAR | WHILE | YIELD | CASECLASS =>
+                  Keyword
+                case _ => Default
+              }
+            )
           }
           .filterNot(_.length <= 0)
       }
@@ -279,8 +277,8 @@ class Socco(val global: Global) extends Plugin {
               case o: ModuleSymbol =>
                 Some(
                   (
-                    go(o.owner).fold("") {
-                      case (p, s, _) => p + s
+                    go(o.owner).fold("") { case (p, s, _) =>
+                      p + s
                     } + o.name + "$",
                     "$",
                     ".html"
@@ -289,8 +287,8 @@ class Socco(val global: Global) extends Plugin {
               case o: ModuleClassSymbol =>
                 Some(
                   (
-                    go(o.owner).fold("") {
-                      case (p, s, _) => p + s
+                    go(o.owner).fold("") { case (p, s, _) =>
+                      p + s
                     } + o.name + "$",
                     "$",
                     ".html"
@@ -334,55 +332,50 @@ class Socco(val global: Global) extends Plugin {
 
         def maybeTypeSymbol(symbol: Symbol): Option[TypeAnnotation] = {
           def findPackage(symbolName: String) =
-            packages.find {
-              case (name, _) =>
-                (name == symbolName) || (symbolName.startsWith(name + "."))
+            packages.find { case (name, _) =>
+              (name == symbolName) || (symbolName.startsWith(name + "."))
             }
 
           symbol match {
             case s: Symbol if s.isImplementationArtifact => None
             case p: ModuleSymbol if p.hasPackageFlag =>
-              findPackage(p.fullName).flatMap {
-                case (_, link) =>
-                  scalaDocLink(p).map { encodedPackageName =>
-                    TypeAnnotation(
-                      s"$link/$encodedPackageName",
-                      p.fullName
-                    )
-                  }
+              findPackage(p.fullName).flatMap { case (_, link) =>
+                scalaDocLink(p).map { encodedPackageName =>
+                  TypeAnnotation(
+                    s"$link/$encodedPackageName",
+                    p.fullName
+                  )
+                }
               }
             case o: ModuleSymbol =>
-              findPackage(o.fullName).flatMap {
-                case (_, link) =>
-                  scalaDocLink(o).map { encodedObjectName =>
-                    TypeAnnotation(
-                      s"$link/$encodedObjectName",
-                      o.fullName
-                    )
-                  }
+              findPackage(o.fullName).flatMap { case (_, link) =>
+                scalaDocLink(o).map { encodedObjectName =>
+                  TypeAnnotation(
+                    s"$link/$encodedObjectName",
+                    o.fullName
+                  )
+                }
               }
             case o: ModuleClassSymbol =>
-              findPackage(o.fullName).flatMap {
-                case (_, link) =>
-                  scalaDocLink(o).map { encodedObjectName =>
-                    TypeAnnotation(
-                      s"$link/$encodedObjectName",
-                      o.fullName
-                    )
-                  }
+              findPackage(o.fullName).flatMap { case (_, link) =>
+                scalaDocLink(o).map { encodedObjectName =>
+                  TypeAnnotation(
+                    s"$link/$encodedObjectName",
+                    o.fullName
+                  )
+                }
               }
             case m: MethodSymbol =>
-              findPackage(m.owner.fullName).flatMap {
-                case (_, link) =>
-                  scalaDocLink(m).map { encodedMethodName =>
-                    val returnType =
-                      m.returnType.toString.replaceAll("""\s""", "")
-                    TypeAnnotation(
-                      s"$link/$encodedMethodName",
-                      s"${m.fullName}${m.info.toString
-                        .replaceAll(s"(=>\\s*)?\\Q$returnType\\E${'$'}", s": $returnType")}"
-                    )
-                  }
+              findPackage(m.owner.fullName).flatMap { case (_, link) =>
+                scalaDocLink(m).map { encodedMethodName =>
+                  val returnType =
+                    m.returnType.toString.replaceAll("""\s""", "")
+                  TypeAnnotation(
+                    s"$link/$encodedMethodName",
+                    s"${m.fullName}${m.info.toString
+                      .replaceAll(s"(=>\\s*)?\\Q$returnType\\E${'$'}", s": $returnType")}"
+                  )
+                }
               }
             case t: TermSymbol =>
               findPackage(t.typeSignature.typeSymbol.fullName).flatMap {
@@ -396,14 +389,13 @@ class Socco(val global: Global) extends Plugin {
                   }
               }
             case c: ClassSymbol =>
-              findPackage(c.fullName).flatMap {
-                case (_, link) =>
-                  scalaDocLink(c).map { encodedClassName =>
-                    TypeAnnotation(
-                      s"$link/$encodedClassName",
-                      c.fullName
-                    )
-                  }
+              findPackage(c.fullName).flatMap { case (_, link) =>
+                scalaDocLink(c).map { encodedClassName =>
+                  TypeAnnotation(
+                    s"$link/$encodedClassName",
+                    c.fullName
+                  )
+                }
               }
             case _ =>
               None
@@ -498,8 +490,8 @@ class Socco(val global: Global) extends Plugin {
 
           def findPackage(url: String) =
             packages
-              .find {
-                case (name, _) => url.startsWith(name.replaceAll("[.]", "/"))
+              .find { case (name, _) =>
+                url.startsWith(name.replaceAll("[.]", "/"))
               }
               .map(_._2)
 
@@ -521,7 +513,7 @@ class Socco(val global: Global) extends Plugin {
 
           transformer.transform(block.text) match {
             case Right(html) => html
-            case Left(error) => 
+            case Left(error) =>
               println(error.message)
               block.text
           }
@@ -536,16 +528,15 @@ class Socco(val global: Global) extends Plugin {
             <div class="comment"><h1>${title}</h1></div>
             <div class="code"></div>
           </section>
-          ${blocks.map {
-          case (comment, code) =>
-            s"""
+          ${blocks.map { case (comment, code) =>
+          s"""
               <section class="${if (comment.text.trim.matches("@\\w+"))
-              comment.text.trim.drop(1)
-            else ""}">
+            comment.text.trim.drop(1)
+          else ""}">
                 <div class="comment ${if (comment.text.trim.isEmpty) "empty"
-            else ""}">${formatComments(comment, packages)}</p></div>
+          else ""}">${formatComments(comment, packages)}</p></div>
                 <div class="code ${if (code.text.trim.isEmpty) "empty"
-            else ""}">${formatSourceCode(code, tokens)}</div>
+          else ""}">${formatSourceCode(code, tokens)}</div>
               </section>
             """
         }.mkString}

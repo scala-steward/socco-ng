@@ -17,5 +17,4 @@
 
 // Example: License Header
 
-object License {
-}
+object License {}
