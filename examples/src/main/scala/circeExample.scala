@@ -24,10 +24,10 @@ object ParseSomeJson {
   val doc: Json = parse(json).getOrElse(Json.Null)
 
   for {
-    // We can now use [Optics](https://circe.github.io/circe/optics.html) to traverse 
+    // We can now use [Optics](https://circe.github.io/circe/optics.html) to traverse
     // the `Json` value and extract the relevant parts.
     bar <- root.values.bar.boolean.getOption(doc)
     baz <- root.values.baz.double.getOption(doc)
-  } yield (bar,baz)
+  } yield (bar, baz)
 
 }
