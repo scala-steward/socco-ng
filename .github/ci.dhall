@@ -1,7 +1,8 @@
 let GithubActions =
-      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall sha256:4c9474076eb57c92ea99ce3a4fdd9acc9bee1bdeedbc6f2b6840235128caf5b3
+      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall
+        sha256:4c9474076eb57c92ea99ce3a4fdd9acc9bee1bdeedbc6f2b6840235128caf5b3
 
-let matrix = toMap { scala = [ "2.12.14", "2.13.6" ] }
+let matrix = toMap { scala = [ "2.12.15", "2.13.7" ] }
 
 let setup =
       [ GithubActions.steps.actions/checkout
