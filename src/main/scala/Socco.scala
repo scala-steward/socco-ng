@@ -43,11 +43,12 @@ class Socco(val global: Global) extends Plugin {
         case regex"out:(.*)$directory" =>
           out = new java.io.File(directory)
         case regex"style:(.*)$file" =>
-          userStyles = Some(Source.fromFile(file).getLines.mkString("\n"))
+          val lines = Source.fromFile(file).getLines().mkString("\n")
+          userStyles = Some(lines)
         case regex"header:(.*)$file" =>
-          header = Some(Source.fromFile(file).getLines.mkString("\n"))
+          header = Some(Source.fromFile(file).getLines().mkString("\n"))
         case regex"footer:(.*)$file" =>
-          footer = Some(Source.fromFile(file).getLines.mkString("\n"))
+          footer = Some(Source.fromFile(file).getLines().mkString("\n"))
         case regex"package_([^:]*)$packageName:(.*)$url" =>
           packages = packages + (packageName -> url)
         case oops =>
@@ -306,7 +307,7 @@ class Socco(val global: Global) extends Plugin {
                 val methodAnchor = {
                   val returnType =
                     m.returnType.toString.replaceAll("""\s""", "")
-                  m.name + m.info.toString
+                  m.name.toString + m.info.toString
                     .replaceAll("""\s""", "")
                     .replaceAll(
                       s"(=>)?\\Q$returnType\\E${'$'}",
