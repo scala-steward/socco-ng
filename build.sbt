@@ -56,14 +56,14 @@ lazy val socco =
       ),
       pomPostProcess := removeDependencies("org.planet42", "org.scala-lang"),
       // Vendorise internal libs
-      publishArtifact in (Compile, packageBin) := false,
-      artifact in (Compile, assembly) := {
-        val core = (artifact in (Compile, packageBin)).value
-        val vendorised = (artifact in (Compile, assembly)).value
+      Compile / packageBin / publishArtifact := false,
+      Compile / assembly / artifact := {
+        val core = (Compile / packageBin / artifact).value
+        val vendorised = (Compile / assembly / artifact).value
         vendorised
       },
-      assemblyExcludedJars in assembly := {
-        (fullClasspath in assembly).value.filter {
+      assembly / assemblyExcludedJars := {
+        (assembly / fullClasspath).value.filter {
           case jar if jar.data.getName.startsWith("scala-reflect-")  => true
           case jar if jar.data.getName.startsWith("scala-library-")  => true
           case jar if jar.data.getName.startsWith("scala-compiler-") => true
@@ -110,7 +110,7 @@ lazy val socco =
           state
       }
     )
-    .settings(addArtifact(artifact in (Compile, assembly), assembly): _*)
+    .settings(addArtifact(Compile / assembly / artifact, assembly): _*)
 
 lazy val examples =
   project.settings(
