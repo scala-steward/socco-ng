@@ -15,7 +15,7 @@ jobs:
       matrix:
         scala:
           - "2.12.18"
-          - "2.13.11"
+          - "2.13.12"
   publish:
     if: "github.event_name == 'push'"
     name: publish
