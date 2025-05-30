@@ -339,7 +339,7 @@ class Socco(val global: Global) extends Plugin {
 
           symbol match {
             case s: Symbol if s.isImplementationArtifact => None
-            case p: ModuleSymbol if p.hasPackageFlag =>
+            case p: ModuleSymbol if p.hasPackageFlag     =>
               findPackage(p.fullName).flatMap { case (_, link) =>
                 scalaDocLink(p).map { encodedPackageName =>
                   TypeAnnotation(
